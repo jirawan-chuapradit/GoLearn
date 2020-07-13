@@ -6,11 +6,7 @@ import (
 	"strings"
 )
 
-func newParser() parser {
-
-	return parser{sum:make(map[string]result) }
-}
-
+// result stores the parsed result for a domain
 type result struct {
 	domain string
 	visits int
@@ -18,61 +14,78 @@ type result struct {
 	metrics map[string]int
 }
 
+// parser keep tracks of the parsing
 type parser struct {
 	sum     map[string]result //total visits per domain
-	domains []string       //number of parsed lines
-	total   int            //total visits to all domains
-	lines   int            //number of parsed lines
+	domains []string          //number of parsed lines
+	total   int               //total visits to all domains
+	lines   int               //number of parsed lines
+	lerr    error
 }
 
-func parse(p parser, line string) (parsed result,err error) {
+//newPasser contructs, initializes and returns a new parser
+func newParser() *parser {
 
-	//var (
-	//	parsed result
-	//	err error
-	//	)
+	return &parser{sum: make(map[string]result)}
+}
+
+// parse parses a log line and returns the parsed result with an error
+func parse(p *parser, line string) (r result) {
+
+	if p.lerr != nil {
+		return
+	}
+
+
+	p.lines++
 
 	fields := strings.Fields(line)
-	//fmt.Printf("domain: %s - visits: %s\n", fields[0], fields[1])
+
 
 	if len(fields) != 2 {
-		err = fmt.Errorf("wrong input: %v (line #%d)", fields, p.lines)
+		p.lerr = fmt.Errorf("wrong input: %v (line #%d)", fields, p.lines)
 		//return parsed, err
 		return
 	}
 
-	parsed.domain = fields[0]
+	var err error
+
+	r.domain = fields[0]
 
 	//sum the total visits per domain
-	parsed.visits, err = strconv.Atoi(fields[1])
-	if parsed.visits < 0 || err != nil {
-		err = fmt.Errorf("wrong input: %q(line #%d)", fields[1], p.lines)
+	r.visits, err = strconv.Atoi(fields[1])
+	if r.visits < 0 || err != nil {
+		p.lerr = fmt.Errorf("wrong input: %q(line #%d)", fields[1], p.lines)
 		//return parsed,err
-		return
+
 	}
 
 	//return parsed, err
 	return
 }
 
-func update(p parser,parsed result) parser  {
-	domain, visits := parsed.domain, parsed.visits
-
+// update updates the parser for given parsing resu lt
+func update(p *parser, r result) {
+	if p.lerr != nil {
+		return
+	}
 
 	//collect the unique domains
-	if _, ok := p.sum[domain]; ok {
-		p.domains = append(p.domains, domain)
+	if _, ok := p.sum[r.domain]; ok {
+		p.domains = append(p.domains, r.domain)
 	}
 
 	//keep track of total and per domain visits
-	p.total += visits
+	p.total += r.visits
 
-
-
-	r := result{
-		domain: domain,
-		visits: visits + p.sum[domain].visits,
+	//create and assign a new copy of `visit`
+	p.sum[r.domain] =  result{
+		domain: r.domain,
+		visits: r.visits + p.sum[r.domain].visits,
 	}
-	p.sum[domain] = r
-	return p
+
+}
+
+func err(p *parser) error {
+	return p.lerr
 }
