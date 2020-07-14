@@ -7,12 +7,12 @@ type game struct {
 }
 
 //printGame() receives a game value through the receiver variable: "g"
-func (g *game)printGame(){
+func (g *game)print(){
 	fmt.Printf("%-15s: %s\n", g.title, g.price.string())
 }
 
 func (g *game) discount(ratio float64)  {
 	g.price *= money((1-ratio))
-	g.printGame()
+	g.print()
 	fmt.Println()
 }

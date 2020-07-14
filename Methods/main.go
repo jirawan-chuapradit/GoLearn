@@ -1,11 +1,12 @@
 package main
 
 func main() {
+
 	var (
-		//mobydick = book{
-		//	title: "moby dick",
-		//	price: 10,
-		//}
+		mobydick = book{
+			title: "moby dick",
+			price: 10,
+		}
 
 		minecraft = game{
 			title: "minecraft",
@@ -16,26 +17,32 @@ func main() {
 			title: "tetris",
 			price: 5,
 		}
+		rubik = puzzle{title: "rubik's cube", price: 5}
+		yoda = toy{title:"yoda", price: 150}
 	)
 
-	//minecraft.discount(.5)
+	var store list
+
+	store = append(store, &tetris, &minecraft, mobydick, rubik, &yoda)
+
+	store.discount(.5)
+	store.print()
+
+	//	 interface value are comparable
+	//fmt.Println(store[0] == &tetris)
+	//fmt.Println(store[3] == rubik)
 	//
-	//game.printGame(minecraft)
+	//var p printer
 	//
-	//mobydick.printBook()
-	//minecraft.printGame()
-	//tetris.printGame()
+	//p = mobydick
+	//p = rubik
+	//p = &minecraft
+	//
+	//p = &tetris
+	//tetris.discount(.5)
+	//p.discount(.5)
+	//p.print()
 
-	//var h huge
-	//for i := 0; i <10; i++{
-	//	h.addr()
-	//}
 
-	var items []*game
-	items = append(items, &minecraft, &tetris)
-
-	my := list(items)
-	//my = nil
-	my.print()
 
 }
