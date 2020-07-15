@@ -1,27 +1,57 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"sort"
+	"log"
 )
 
+const data = `
+[
+ {
+  "Title": "moby dick",
+  "Price": 20,
+  "Released": 733622400
+ },
+ {
+  "Title": "odyssey",
+  "Price": 20,
+  "Released": 118281600
+ },
+ {
+  "Title": "hobbit",
+  "Price": 20,
+  "Released": -62135596800
+ }
+]`
+
 func main() {
+	var l list
 
-	l := list{
-		{title:"moby dick",
-			price: 20,
-			released: toTimestamp("733622400")},
-
-		{title:"odyssey",
-			price: 20,
-			released: toTimestamp(118281600)},
-		{title:"hobbit",
-			price: 20,
-		},
+	err := json.Unmarshal([]byte(data) , &l)
+	if err != nil {
+		log.Fatal(err)
 	}
-	//sort.Sort(l)
-	//sort.Sort(byReleaseDate(l))
-	sort.Sort(sort.Reverse(byReleaseDate(l)))
-	l.discount(.5)
 	fmt.Print(l)
+	//
+	//l := list{
+	//	{Title:"moby dick",
+	//		Price: 20,
+	//		Released: toTimestamp("733622400")},
+	//
+	//	{Title:"odyssey",
+	//		Price: 20,
+	//		Released: toTimestamp(118281600)},
+	//	{Title:"hobbit",
+	//		Price: 20,
+	//	},
+	//}
+	//
+	//data, err := json.MarshalIndent(l,""," ")
+	//if err != nil {
+	//	log.Fatal(err)
+	//	fmt.Println(err)
+	//	return
+	//}
+	//fmt.Println(string(data))
 }

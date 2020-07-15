@@ -9,8 +9,8 @@ type timestamp struct {
 	time.Time
 }
 
-func (ts timestamp ) String() string {
-	if ts.IsZero(){
+func (ts timestamp) String() string {
+	if ts.IsZero() {
 		return "unknown"
 	}
 
@@ -20,7 +20,7 @@ func (ts timestamp ) String() string {
 
 func toTimestamp(v interface{}) (ts timestamp) {
 	var t int
-	switch  v:=v.(type) {
+	switch v := v.(type) {
 	case int:
 		t = v
 	case string:
@@ -29,7 +29,18 @@ func toTimestamp(v interface{}) (ts timestamp) {
 
 	//Mon Jan 2 15:04:05 -0700 MST 2006
 
-	ts.Time = time.Unix((int64(t)),0)
+	ts.Time = time.Unix((int64(t)), 0)
 	return ts
+}
 
+func (ts timestamp) MarshalJSON() (data []byte, _ error) {
+	//ts >> integer      -->  ts.Unix() >> integer
+	//	data << integer  -->  strconv.AppendInt(data, integer, 10)
+	return strconv.AppendInt(data, ts.Unix(), 10), nil
+}
+
+func (ts *timestamp) UnmarshalJSON(data []byte) error {
+	//118281600
+	*ts = toTimestamp(string(data))
+	return nil
 }
