@@ -1,40 +1,27 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
 
-	store := list{
-		&book{
-			product{"moby dick",
-				20,
-			}, 118281600},
+	l := list{
+		{title:"moby dick",
+			price: 20,
+			released: toTimestamp("733622400")},
 
-		&book{
-			product{"hobbit",
-				20,
-			}, "733622400"},
-		&book{
-			product{"hobbit",
-				20,
-			}, nil},
-
-		&game{
-			product{"minecraft",
-				20,
-			}},
-
-		&game{
-			product{"tetris",
-				5,
-			}},
-		&puzzle{product{"rubik's cube", 5}},
-		&toy{product{"yoda", 150}},
+		{title:"odyssey",
+			price: 20,
+			released: toTimestamp(118281600)},
+		{title:"hobbit",
+			price: 20,
+		},
 	}
-
-	store.discount(.5)
-	store.print()
-
-	t := &toy{product{"yoda", 150}}
-	fmt.Printf("%#v\n", t)
+	//sort.Sort(l)
+	//sort.Sort(byReleaseDate(l))
+	sort.Sort(sort.Reverse(byReleaseDate(l)))
+	l.discount(.5)
+	fmt.Print(l)
 }

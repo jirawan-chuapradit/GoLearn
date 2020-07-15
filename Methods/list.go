@@ -1,40 +1,70 @@
 package main
 
-import "fmt"
+import (
+	"sort"
+	"strings"
+)
 
-//an abstract type, a protocol, a contract
-// no implementation
-type item interface {
-	print()
-	discount(ratio float64)
-}
+//It's because the product type is using methods with pointer receivers.
+type list []*product
 
-type list []item
-
-func (l list) print() {
+func (l list) String() string {
 
 	if len(l) == 0 {
-		fmt.Println("Sorry. we're waiting for delivery")
-		return
+		return "Sorry. we're waiting for delivery.\n"
 	}
 
-	for _, it := range l {
-
-		it.print()
+	var str strings.Builder //This is buffer for string values.
+	for _, p := range l {
+		//p.print()
+		//fmt.Printf("* %s\n",p)
+		str.WriteString("* ")
+		str.WriteString(p.String())
+		str.WriteRune('\n')
 	}
+	return str.String()
 }
 
 func (l list) discount(ratio float64) {
 	//
 	//type discounter interface{ discount(ratio float64) }
 
-	for i, it := range l {
+	for _, p := range l {
 		// try to assert whether the next item satisfies this interface.
 		// if the next item has a discount method it will satisfy it.
 
 		//if it, ok := it.(discounter); ok {
-		it.discount(ratio)
-		fmt.Printf("%d  - %#v\n",i,it)
+		p.discount(ratio)
+		//fmt.Printf("%d  - %#v\n",i,p)
 		//}
 	}
 }
+
+// Len is the number of elements in the collection.
+func (l list) Len() int {
+	return len(l)
+}
+// Less reports whether the element with
+// index i should sort before the element with index j.
+func (l list) Less(i, j int) bool{
+	return l[i].title < l[j].title
+}
+// Swap swaps the elements with indexes i and j.
+func (l list) Swap(i, j int){
+	l[i],l[j] = l[j],l[i]
+}
+
+type byRelease struct {
+	list
+}
+
+func (br byRelease) less (i, j int) bool{
+	// if the first time value comes before the second time value here
+	// the before method is gonna return true
+	return br.list[i].released.Before(br.list[j].released.Time)
+}
+
+func byReleaseDate(l list) sort.Interface {
+	return &byRelease{l}
+}
+
