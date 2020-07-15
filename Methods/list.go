@@ -4,11 +4,12 @@ import "fmt"
 
 //an abstract type, a protocol, a contract
 // no implementation
-type printer interface {
+type item interface {
 	print()
+	discount(ratio float64)
 }
 
-type list []printer
+type list []item
 
 func (l list) print() {
 
@@ -24,30 +25,16 @@ func (l list) print() {
 }
 
 func (l list) discount(ratio float64) {
+	//
+	//type discounter interface{ discount(ratio float64) }
 
-	type discounter interface{ discount(ratio float64) }
-
-	for _, it := range l {
+	for i, it := range l {
 		// try to assert whether the next item satisfies this interface.
 		// if the next item has a discount method it will satisfy it.
 
-		if it, ok := it.(discounter); ok {
-			it.discount(ratio)
-		}
-
-
-
-		//g, isGame := it.(*game)
-		////fmt.Printf("%T game? %v\n", it, isGame)
-		//if !isGame {
-		//	continue
+		//if it, ok := it.(discounter); ok {
+		it.discount(ratio)
+		fmt.Printf("%d  - %#v\n",i,it)
 		//}
-		//g.discount(ratio)
-		//
-		//t, isToy := it.(*toy)
-		//if isToy {
-		//	t.discount(ratio)
-		//}
-
 	}
 }

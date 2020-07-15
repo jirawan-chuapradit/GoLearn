@@ -1,48 +1,40 @@
 package main
 
+import "fmt"
+
 func main() {
 
-	var (
-		mobydick = book{
-			title: "moby dick",
-			price: 10,
-		}
+	store := list{
+		&book{
+			product{"moby dick",
+				20,
+			}, 118281600},
 
-		minecraft = game{
-			title: "minecraft",
-			price: 20,
-		}
+		&book{
+			product{"hobbit",
+				20,
+			}, "733622400"},
+		&book{
+			product{"hobbit",
+				20,
+			}, nil},
 
-		tetris = game{
-			title: "tetris",
-			price: 5,
-		}
-		rubik = puzzle{title: "rubik's cube", price: 5}
-		yoda = toy{title:"yoda", price: 150}
-	)
+		&game{
+			product{"minecraft",
+				20,
+			}},
 
-	var store list
-
-	store = append(store, &tetris, &minecraft, mobydick, rubik, &yoda)
+		&game{
+			product{"tetris",
+				5,
+			}},
+		&puzzle{product{"rubik's cube", 5}},
+		&toy{product{"yoda", 150}},
+	}
 
 	store.discount(.5)
 	store.print()
 
-	//	 interface value are comparable
-	//fmt.Println(store[0] == &tetris)
-	//fmt.Println(store[3] == rubik)
-	//
-	//var p printer
-	//
-	//p = mobydick
-	//p = rubik
-	//p = &minecraft
-	//
-	//p = &tetris
-	//tetris.discount(.5)
-	//p.discount(.5)
-	//p.print()
-
-
-
+	t := &toy{product{"yoda", 150}}
+	fmt.Printf("%#v\n", t)
 }
